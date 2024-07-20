@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anime Character</title>
+    <style>
+      body {
+        position: relative;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding: 0;
+        margin: 0;
+        background-color: #eee;
+        font-size: 18px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        position: relative;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+          rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        padding: 30px;
+        width: 780px;
+        height: 560px;
+
+        background-color: #fff;
+      }
+      main {
+        margin: 30px 0;
+        display: flex;
+        justify-content: start;
+        gap: 20px;
+        transition: all 1s ease-in-out;
+      }
+      .button {
+        --b: 3px;
+        --s: 0.45em;
+        --color: #373b44;
+        padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
+        color: var(--color);
+        --_p: var(--s);
+        background: conic-gradient(
+            from 90deg at var(--b) var(--b),
+            #0000 90deg,
+            var(--color) 0
+          )
+          var(--_p) var(--_p) / calc(100% - var(--b) - 2 * var(--_p))
+          calc(100% - var(--b) - 2 * var(--_p));
+        transition: 0.3s linear, color 0s, background-color 0s;
+        outline: var(--b) solid #0000;
+        outline-offset: 0.6em;
+        font-size: 16px;
+        cursor: pointer;
+        border: 0;
+        font-family: inherit;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+      .button:hover,
+      .button:focus-visible {
+        --_p: 0px;
+        outline-color: var(--color);
+        outline-offset: 0.05em;
+      }
+      .button:active {
+        background: var(--color);
+        color: #fff;
+      }
+      span {
+        font-size: 14px;
+        color: gray;
+      }
+      .loading {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #373b44;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 2s linear infinite;
+        display: none;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <span>&copy; 2024 panh_nee.</span>
+      <h1>Random Anime Character</h1>
+      <button id="fetch-character" class="button">Get Character</button>
+      <hr />
+      <div id="loading" class="loading"></div>
+      <main>
+        <img id="charater-img" src="" />
+        <div>
+          <h1 id="anime-name"></h1>
+          <p id="character-name"></p>
+          <p id="character-japanese-name"></p>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document
+        .getElementById("fetch-character")
+        .addEventListener("click", async () => {
+          const loadingElement = document.getElementById("loading");
+          const AnimeName = document.getElementById("anime-name");
+          const CharacterName = document.getElementById("character-name");
+          const CharacterJapaneseName = document.getElementById(
+            "character-japanese-name"
+          );
+          const AnimeImg = document.getElementById("charater-img");
+
+          // Hiển thị hiệu ứng loading
+          loadingElement.style.display = "block";
+
+          try {
+            const response = await fetch("http://localhost:3000/character");
+            const character = await response.json();
+
+            AnimeName.innerHTML = character.AnimeName;
+            CharacterName.innerHTML =
+              "<strong>Character Name: </strong>" + character.CharacterName;
+            CharacterJapaneseName.innerHTML =
+              "<strong>Japanese Name: </strong>" +
+              character.CharacterJapaneseName;
+            AnimeImg.src = character.CharacterImage;
+          } catch (error) {
+            console.error("Error fetching character:", error);
+          } finally {
+            // Ẩn hiệu ứng loading sau khi dữ liệu được tải
+            loadingElement.style.display = "none";
+          }
+        });
+    </script>
+  </body>
+</html>
